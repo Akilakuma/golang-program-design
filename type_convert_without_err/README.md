@@ -1,11 +1,11 @@
 型態轉換不回傳噴錯
 ===
 
-有錯就嚴重錯誤就噴panic
+我們心目中的嚴重錯誤才算錯，有錯就噴panic！
 
 ## 問題需求
 1. 有時候，回傳值若不止一個，其實非常困擾，例如在需要將大量的參數寫入struct裡面的時機。
-1. 有些狀態值有錯誤並沒不要緊，我們不這麼在乎。
+1. 有些狀態值有錯誤並不要緊，我們不這麼在乎。
 1. 若某些重要值發生錯誤，根本不需要繼續往下做，預期整塊都是壞光光，不如幫你爆panic，順便逼迫你在一開始就思考，該值做型態轉轉換時，是不是真的很重要，提早做決定。
 
 
@@ -31,7 +31,7 @@ if conErr2 != nil {
 userInfo := &UserData{
     docNum : numInt,
     sumCheck : sumCheckInt,
-    setTimesInt : setTimesInt,
+    setTimes : setTimesInt,
 }
 ```
 
