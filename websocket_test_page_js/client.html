@@ -1,0 +1,174 @@
+<html>
+
+<head>
+    <title>WebSocket Input Test Page By Akilakuma </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+
+<style>
+    /* #chat {
+        text-align: left;
+        background: #f1f1f1;
+        width: 700px;
+        min-height: 300px;
+        padding: 20px;
+    } */
+</style>
+
+<body>
+    <center>
+
+        <h3>Meow Meow Game Command List & Return Info</h3>
+        <select id="ws_command">
+            <option value="">請選擇</option>
+            <option value="loginlogin">loginlogin</option>
+            <option value="game_start">game_start</option>
+            <option value="special_game_select">special_game_select</option>
+            <option value="reconnect">重新連線websocket</option>
+        </select>
+        <p>
+            <input value="fire" id="fire" type="button">
+            <input value="清空" id="clear" type="button">
+        </p>
+
+
+    </center>
+    <div id="chat"></div>
+
+    <script>
+        // var name = "Guest" + Math.floor(Math.random() * 1000);
+
+        // drop list 命令選項
+        var command_now = "";
+        // object of DOM
+        var chat = $('#chat');
+        var fire_btn = $('#fire');
+        var clear_btn = $('#clear');
+
+        // ws.onclose =  () => {
+        //     console.log("I am close");
+        // }
+
+        var helper = {
+            ws : {},
+            timeNow : function () {
+                var iso = new Date().toISOString();
+                return iso.split("T")[1].split(".")[0];
+            },
+            connectWs : function() {
+                var url = "ws://" + window.location.host + "/meowmeow/trigger";
+                helper.ws = new WebSocket(url);
+                helper.ws.on
+
+                helper.ws.onopen =  () => {
+                    console.log("open websocket");
+                }
+
+                helper.ws.onmessage = helper.readMessage;
+            },
+            reConnectWs : function() {
+                // 如果websocket 已經斷線了吧就重新連吧！！
+                if (helper.ws.readyState == helper.ws.CLOSED) {
+                    console.log("now the websocket is closed!!! 重新連接");
+                    helper.connectWs();
+                     $('#chat').html("");
+                }
+            },
+            readMessage : function(msg) {
+                var line = helper.timeNow() + " " + msg.data + "<br/><br/>";
+                $('#chat').append(line);
+            },
+            disconnectInfo: function() {
+                $('#chat').html("websocket 已經斷線，請重新連接");
+            },
+            executeCommand: function(c) {
+                switch (c) {
+                    case "reconnect":
+                        helper.reConnectWs();
+                        break;
+                    case "loginlogin":
+                        command_option.loginlogin();
+                        break;
+                    case "game_start":
+                        command_option.game_start();
+                        break;
+                    case "special_game_select":
+                        command_option.special_game_select();
+                        break;
+                }
+            }
+        }
+
+        var command_option = {
+            loginlogin: function () {
+                if (helper.ws.readyState == helper.ws.OPEN) {
+                    command_now = "loginlogin";
+                    var commandObj = {}
+                    commandObj.command = "loginlogin";
+                    commandObj.args = {};
+                    commandObj.args.sid = "70d79267c56c302be5d02fff80904900ac52a89e8b62402cacb75ac3889cfc11";
+                    commandObj.args.gameID = "105";
+                    commandObj.args.demo = true;
+                    commandObj.args.moduleID = "";
+
+                    var cMsg = JSON.stringify(commandObj);
+                    helper.ws.send(cMsg);
+                } else {
+                    helper.disconnectInfo();
+                }
+            },
+            game_start: function () {
+                if (helper.ws.readyState == helper.ws.OPEN) {
+                    command_now = "game_start";
+                    var commandObj = {}
+                    commandObj.command = "game_start";
+                    commandObj.args = {};
+                    commandObj.args.sid = "70d79267c56c302be5d02fff80904900ac52a89e8b62402cacb75ac3889cfc11";
+                    commandObj.args.level = "1";
+                    commandObj.args.lineSet = "way";
+                    commandObj.args.rate = "1:1";
+                    commandObj.args.respin = false;
+
+                    var cMsg = JSON.stringify(commandObj);
+                    helper.ws.send(cMsg);
+                } else {
+                    helper.disconnectInfo();
+                }
+            },
+            special_game_select: function () {
+                if (helper.ws.readyState == helper.ws.OPEN) {
+                    command_now = "special_game_select";
+                    var commandObj = {}
+                    commandObj.command = "special_game_select";
+                    commandObj.args = {};
+                    commandObj.args.select = "2";
+                    var cMsg = JSON.stringify(commandObj);
+                    helper.ws.send(cMsg);
+                } else {
+                    helper.disconnectInfo();
+                }
+            }
+        }
+
+        // 初始化 websocket 連線
+        helper.connectWs();
+
+        // method 掛載
+        $('#ws_command').change(function(){
+            helper.executeCommand($(this).val())
+        })
+
+        fire_btn.onclick = function (e) {
+            console.log(command_now);
+            helper.executeCommand(command_now);
+        };
+
+        clear_btn.onclick = function (e) {
+            chat.innerText = "";
+        };
+
+
+    </script>
+</body>
+
+</html>
