@@ -1,0 +1,16 @@
+{
+    "api_name": "get_session",
+    "worker_num": 50,
+    "total_request_num": 3000,
+    "strategy": "normal",
+    "timeout": 3,
+    "over_time_millisecond": 500,
+    "is_need_para": true,
+    "para": [
+        {
+            "g_id": 105,
+            "ip":      "127.0.0.1",
+            "session": "45aae27f54ea4d78c3ddf055ae01c3c78efac4fe59e7b153cc3724fba6c2534f"
+        }
+    ]
+}

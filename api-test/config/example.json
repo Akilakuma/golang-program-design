@@ -1,0 +1,21 @@
+{
+    "api_name": "get_session",
+    "worker_num": 50,
+    "total_request_num": 10000,
+    "strategy": "normal",
+    "timeout": 3,
+    "over_time_millisecond": 100,
+    "is_need_para": true,
+    "para": [
+        {
+            "id": 1,
+            "code": 10003,
+            "u_id": 9
+        },
+        {
+            "id": 5,
+            "code": 10003,
+            "u_id": 3
+        }
+    ]
+}
