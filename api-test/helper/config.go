@@ -10,6 +10,7 @@ import (
 // APISetting 測試API的相關設定
 type APISetting struct {
 	APIName         string                   `json:"api_name"`              // API 名稱
+	APIURL          string                   `json:"api_url"`               // API URL
 	WorkerNum       int                      `json:"worker_num"`            // 同時打gorutine的數量
 	TotalRequestNum int                      `json:"total_request_num"`     // 總request數量
 	Strategy        string                   `json:"strategy"`              // 策略：嚴格或一般

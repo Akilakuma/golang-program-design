@@ -12,14 +12,12 @@ import (
 	greq "github.com/syhlion/greq"
 )
 
-// GetSessionURL URL:驗證session /api/user/session
-const GetSessionURL = "http://127.0.0.1/api/user/session"
-
 // getSessionAPI 測試取得GetSession API
 func getSessionAPI(c *greq.Client, setting helper.APISetting, wg *sync.WaitGroup) {
 
 	paraRaw := setting.Para
 	IsNeedPara := setting.IsNeedPara
+	url := setting.APIURL
 
 	if IsNeedPara && (len(paraRaw) == 0) {
 		log.Println("設定檔API參數設定有問題")
@@ -35,7 +33,7 @@ func getSessionAPI(c *greq.Client, setting helper.APISetting, wg *sync.WaitGroup
 
 	// 發API
 	tS := time.Now()
-	_, s, err := c.PostRaw(GetSessionURL, para)
+	_, s, err := c.PostRaw(url, para)
 	tE := time.Now().Sub(tS)
 
 	// 結果紀錄

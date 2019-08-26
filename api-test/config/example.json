@@ -1,5 +1,6 @@
 {
     "api_name": "get_session",
+    "api_url": "http://127.0.0.1/api/user/session",
     "worker_num": 50,
     "total_request_num": 10000,
     "strategy": "normal",
