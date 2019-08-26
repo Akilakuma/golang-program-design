@@ -23,18 +23,18 @@ type Recorder struct {
 
 // RoundStatistic 命令執行總統計
 type RoundStatistic struct {
-	apiName         string // API 名稱
-	strategy        string // 策略
-	workerNum       int    // gorutine 數量
-	requestNum      int    // 總處理需求數量
-	successNum      int    // 成功數量
-	failNum         int    // 失敗數量
-	overTimes       int64  // 設定的超過時間
-	overTimeNum     int    // 超過設定預期時間數量
-	costMiniTime    int64  // 最小花費時間
-	costMostTime    int64  // 最大花費時間
-	averageTime     int64  // 平均時間
-	totalTimeSecond int64  // 所有request做完花費時間
+	apiName         string  // API 名稱
+	strategy        string  // 策略
+	workerNum       int     // gorutine 數量
+	requestNum      int     // 總處理需求數量
+	successNum      int     // 成功數量
+	failNum         int     // 失敗數量
+	overTimes       int64   // 設定的超過時間
+	overTimeNum     int     // 超過設定預期時間數量
+	costMiniTime    int64   // 最小花費時間
+	costMostTime    int64   // 最大花費時間
+	averageTime     int64   // 平均時間
+	totalTimeSecond float64 // 所有request做完花費時間
 }
 
 var (
@@ -91,7 +91,6 @@ func CalculateStatistic() RoundStatistic {
 		}
 	}
 
-	roundStatistic.totalTimeSecond = totalTime / 1000
 	roundStatistic.overTimeNum = overTimeNum
 	if len(recorder.costTimes) > 0 {
 		roundStatistic.averageTime = totalTime / int64(len(recorder.costTimes))

@@ -37,6 +37,7 @@ func TriggerAPI(configName string) {
 		return
 	}
 
+	tS := time.Now()
 	// 執行method
 	for i := 0; i < c.TotalRequestNum; i++ {
 		wg.Add(1)
@@ -50,8 +51,10 @@ func TriggerAPI(configName string) {
 	}
 
 	wg.Wait()
+	tE := time.Now().Sub(tS)
 
 	// 發完所有request後，做最後統計
 	statistic := CalculateStatistic()
+	statistic.totalTimeSecond = tE.Seconds()
 	log.Printf("%+v", statistic)
 }
