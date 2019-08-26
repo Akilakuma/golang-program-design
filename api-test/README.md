@@ -20,6 +20,10 @@ var apiMap = map[string]func(*greq.Client, helper.APISetting, *sync.WaitGroup){
 
 ## 執行結果
 
+統計的時間單位除了totalTimeSecond是以秒為單位
+
+其他皆是millisecond
+
 ``` bash
 2019/08/26 11:13:12 Successfully Opened get_session.json
 2019/08/26 11:13:12 {APIName:get_session WorkerNum:50 TotalRequestNum:1000 Strategy:normal Timeout:3 OverTimes:500 IsNeedPara:true Para:[map[game_id:105 ip:127.0.0.1 session:45aae27f54ea4d78c3ddf055ae01c3c78efac4fe59e7b153cc3724fba6c2534f]]}
