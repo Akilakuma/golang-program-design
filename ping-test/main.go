@@ -66,7 +66,7 @@ func commandPing(s struct{}) {
 	Command := fmt.Sprintf("ping -c 1 " + os.Args[1])
 	output, err := exec.Command("/bin/sh", "-c", Command).Output()
 	if err != nil {
-		log.Println("失敗！！！！")
+		log.Println("失敗！err is : ", err)
 		failNum++
 		return
 	}
@@ -75,13 +75,18 @@ func commandPing(s struct{}) {
 	out := string(output)
 
 	a := strings.Split(out, "time")
-	b := strings.Split(a[1], "=")
-	c := strings.Split(b[1], "ms")
-	d := strings.Trim(c[0], " ")
+	if len(a) >= 1 {
+		b := strings.Split(a[1], "=")
+		c := strings.Split(b[1], "ms")
+		d := strings.Trim(c[0], " ")
 
-	e, _ := strconv.ParseFloat(d, 64)
+		e, _ := strconv.ParseFloat(d, 64)
 
-	sumLocker.Lock()
-	totalSum += e
-	sumLocker.Unlock()
+		sumLocker.Lock()
+		totalSum += e
+		sumLocker.Unlock()
+	} else {
+		log.Println("失敗，拿到info是", out)
+		failNum++
+	}
 }
