@@ -30,3 +30,7 @@ var apiMap = map[string]func(*greq.Client, helper.APISetting, *sync.WaitGroup){
 2019/08/26 11:13:12 ======統計紀錄======
 2019/08/26 11:13:15 {apiName:get_session strategy:normal workerNum:50 requestNum:1000 successNum:1000 failNum:0 overTimes:500 overTimeNum:0 costMiniTime:0 costMostTime:286 averageTime:96 totalTimeSecond:96}
 ```
+
+## 執行方式
+go build -o tt
+./tt 參數名稱

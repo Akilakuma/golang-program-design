@@ -60,8 +60,12 @@ func joinStatistic(r SingleAPIResult) {
 	} else {
 		recorder.failNum = recorder.failNum + 1
 	}
-	if r.costTime < recorder.miniTime {
+	if recorder.miniTime == 0 {
 		recorder.miniTime = r.costTime
+	} else {
+		if r.costTime < recorder.miniTime {
+			recorder.miniTime = r.costTime
+		}
 	}
 	if r.costTime > recorder.maxTime {
 		recorder.maxTime = r.costTime
