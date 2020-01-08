@@ -14,4 +14,5 @@
 
 
 ### 結果如附圖
-![](https://i.imgur.com/miRNWQ3.png)
+![](https://i.imgur.com/pMWweJS.png)
+

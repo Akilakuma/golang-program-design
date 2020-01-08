@@ -41,7 +41,12 @@ func main() {
 	em.PushEvent(event3)
 	em.PushEvent(event4)
 
-	em.Running()
+	go em.Running()
+
+	for {
+		time.Sleep(30 * time.Second)
+		go em.Close()
+	}
 }
 
 func action1() error {
@@ -71,6 +76,7 @@ func action4() error {
 // EventManager 事件管理
 type EventManager struct {
 	jobQueue chan *Event
+	exitMsg  chan struct{}
 }
 
 // Event 事件資料
@@ -85,6 +91,7 @@ type Event struct {
 func NewEM() *EventManager {
 	return &EventManager{
 		jobQueue: make(chan *Event, 100),
+		exitMsg:  make(chan struct{}),
 	}
 }
 
@@ -105,6 +112,9 @@ func (em *EventManager) PopEvent() *Event {
 
 // Running 啟動執行
 func (em *EventManager) Running() {
+
+	log.Println("start running")
+
 	// 首先拿出事件
 	// 查看事件的設定時間
 	// 根據這個時間設定一個timer
@@ -113,21 +123,34 @@ func (em *EventManager) Running() {
 	eventTimer := time.NewTimer(t)
 
 	for {
+		select {
 		// timer 到了
-		<-eventTimer.C
-		eventTimer.Stop()
+		case <-eventTimer.C:
 
-		// 執行event
-		go event.Action()
+			log.Println("time arrive")
 
-		// 如果需要重複的話，塞回channel末端
-		if event.IsRepeat {
-			em.PushEvent(event)
+			eventTimer.Stop()
+
+			// 執行event
+			go event.Action()
+
+			// 如果需要重複的話，塞回channel末端
+			if event.IsRepeat {
+				em.PushEvent(event)
+			}
+
+			event = em.PopEvent()
+			t = event.Period
+			eventTimer = time.NewTimer(t)
+		case <-em.exitMsg:
+
+			log.Println("leave")
+			return
 		}
-
-		event = em.PopEvent()
-		t = event.Period
-		eventTimer = time.NewTimer(t)
 	}
+}
 
+// Close 啟動執行
+func (em *EventManager) Close() {
+	em.exitMsg <- struct{}{}
 }
