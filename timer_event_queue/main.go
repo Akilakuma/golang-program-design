@@ -44,8 +44,9 @@ func main() {
 	go em.Running()
 
 	for {
-		time.Sleep(30 * time.Second)
-		go em.Close()
+		time.Sleep(1 * time.Second)
+		log.Println(em.countTime)
+		// go em.Close()
 	}
 }
 
@@ -75,8 +76,10 @@ func action4() error {
 
 // EventManager 事件管理
 type EventManager struct {
-	jobQueue chan *Event
-	exitMsg  chan struct{}
+	jobQueue        chan *Event
+	exitMsg         chan struct{}
+	isNeedCountDown bool // 是否需要知道倒數
+	countTime       int
 }
 
 // Event 事件資料
@@ -90,8 +93,9 @@ type Event struct {
 // NewEM 新的管理器實體
 func NewEM() *EventManager {
 	return &EventManager{
-		jobQueue: make(chan *Event, 100),
-		exitMsg:  make(chan struct{}),
+		jobQueue:        make(chan *Event, 100),
+		exitMsg:         make(chan struct{}),
+		isNeedCountDown: true,
 	}
 }
 
@@ -122,6 +126,11 @@ func (em *EventManager) Running() {
 	t := event.Period
 	eventTimer := time.NewTimer(t)
 
+	// 下一輪開始倒數
+	if em.isNeedCountDown {
+		go em.CountDown(t)
+	}
+
 	for {
 		select {
 		// timer 到了
@@ -139,9 +148,16 @@ func (em *EventManager) Running() {
 				em.PushEvent(event)
 			}
 
+			// 下一輪開始
 			event = em.PopEvent()
 			t = event.Period
 			eventTimer = time.NewTimer(t)
+
+			// 下一輪開始倒數
+			if em.isNeedCountDown {
+				go em.CountDown(t)
+			}
+
 		case <-em.exitMsg:
 
 			log.Println("leave")
@@ -153,4 +169,26 @@ func (em *EventManager) Running() {
 // Close 啟動執行
 func (em *EventManager) Close() {
 	em.exitMsg <- struct{}{}
+}
+
+// CountDown 倒數計時
+func (em *EventManager) CountDown(Period time.Duration) {
+
+	t := Period
+	countDownPeriod := time.NewTicker(t)
+
+	secondCount := time.NewTicker(1 * time.Second)
+
+	defer countDownPeriod.Stop()
+	defer secondCount.Stop()
+
+	for {
+		select {
+		case <-countDownPeriod.C:
+			em.countTime = 0
+			return
+		case <-secondCount.C:
+			em.countTime++
+		}
+	}
 }
