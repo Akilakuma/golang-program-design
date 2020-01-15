@@ -159,7 +159,7 @@ func (em *EventManager) Running() {
 			}
 
 		case <-em.exitMsg:
-
+			eventTimer.Stop()
 			log.Println("leave")
 			return
 		}
