@@ -80,6 +80,7 @@ type EventManager struct {
 	exitMsg         chan struct{}
 	isNeedCountDown bool // 是否需要知道倒數
 	countTime       int
+	isRunning       bool // 是否正在執行
 }
 
 // Event 事件資料
@@ -168,7 +169,9 @@ func (em *EventManager) Running() {
 
 // Close 啟動執行
 func (em *EventManager) Close() {
-	em.exitMsg <- struct{}{}
+	if em.isRunning {
+		em.exitMsg <- struct{}{}
+	}
 }
 
 // CountDown 倒數計時
